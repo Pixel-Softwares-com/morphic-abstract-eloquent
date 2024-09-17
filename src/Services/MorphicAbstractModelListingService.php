@@ -18,7 +18,7 @@ class MorphicAbstractModelListingService
 
     protected string $tableName;
     protected string $morphColumnName;
-    protected AbstractMorphingSpatieBuilder $spatieQueryBuilder;
+    protected AbstractMorphingSpatieBuilder $query;
     protected AbstractRuntimeModel $abstractRuntimeModel;
     protected $BuilderQueryCallback = null;
     protected array $realtionsForLazyLoading = [];
@@ -43,7 +43,7 @@ class MorphicAbstractModelListingService
     }
     protected function initSpatieQueryBuilder(): self
     {
-        $this->spatieQueryBuilder =  AbstractMorphingSpatieBuilder::for($this->initAbstractRuntimeEloquentBuilder());
+        $this->query =  AbstractMorphingSpatieBuilder::for($this->initAbstractRuntimeEloquentBuilder());
         return $this;
     }
 
@@ -74,13 +74,7 @@ class MorphicAbstractModelListingService
     {
         return $this->morphColumnName;
     }
-
-
-    protected function getEagerLoadsToLazyLoading(): array
-    {
-        return $this->spatieQueryBuilder->getSubject()->getEagerLoads();
-    }
-
+ 
     protected function prepareToExecuteQuery(): void
     {
         $this->delayRelationshipLoading(); // and othe methods if it is needed   
@@ -88,7 +82,7 @@ class MorphicAbstractModelListingService
 
     protected function executeQueryBuilderCallback(): void
     {
-        ($this->BuilderQueryCallback)($this->spatieQueryBuilder);
+        ($this->BuilderQueryCallback)($this->query);
     }
 
 
@@ -96,7 +90,7 @@ class MorphicAbstractModelListingService
     {
         $this->executeQueryBuilderCallback();
         $this->prepareToExecuteQuery();
-        $modelCollection = $this->spatieQueryBuilder->get();
+        $modelCollection = $this->query->get();
         EloquentCollectionHelpers::excludeAbstractRuntimeModel($modelCollection);
         return $this->morphicCollectionRelationshipsLazyLoading($modelCollection, $this->getMorphColumnName());
     }
@@ -106,7 +100,7 @@ class MorphicAbstractModelListingService
         $this->executeQueryBuilderCallback();
         $this->prepareToExecuteQuery();
 
-        $paginator = $this->spatieQueryBuilder->paginate($perPage, $columns, $pageName, $page);
+        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page);
 
         EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
 
@@ -119,7 +113,7 @@ class MorphicAbstractModelListingService
         $this->executeQueryBuilderCallback();
         $this->prepareToExecuteQuery();
 
-        $paginator = $this->spatieQueryBuilder->simplePaginate($perPage, $columns, $pageName, $page);
+        $paginator = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
 
         EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
 
@@ -132,7 +126,7 @@ class MorphicAbstractModelListingService
         $this->executeQueryBuilderCallback();
         $this->prepareToExecuteQuery();
 
-        $paginator = $this->spatieQueryBuilder->cursorPaginate($perPage, $columns, $cursorName, $cursor);
+        $paginator = $this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor);
 
         EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
 
