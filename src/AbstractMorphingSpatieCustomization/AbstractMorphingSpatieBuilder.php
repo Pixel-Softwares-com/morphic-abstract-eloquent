@@ -4,10 +4,14 @@ namespace MorphicAbstractEloquent\AbstractMorphingSpatieCustomization;
 
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use Exception;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AbstractMorphingSpatieBuilder extends QueryBuilder
 { 
+    
+    protected ?Collection $totalAllowedFilters = null;
+
     protected function initializeSubject($subject): self
     {
         parent::initializeSubject($subject);
@@ -28,11 +32,15 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
     {
         return (bool) $this->allowedFilters;
     }
-   
-
-    protected function mergeMorphicRelationshipAllowedFilters(array $filters = [])
+     
+    protected function addToTotalAllowedFilters(Collection $filters) : void
     {
-        return array_merge( $filters ,   FilterRuntimeManager::Singleton()->getAllowedFilters() );
+        $this->totalAllowedFilters = $this->totalAllowedFilters?->merge($filters->all()) ?? $filters;
+    }
+
+    public function getAllowedFilters() : Collection
+    {
+        return $this->totalAllowedFilters ?? collect();
     }
     /**
      * @param mixed $filters
@@ -40,16 +48,28 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
      * @return self
      */
     public function allowedFilters($filters): self
-    { 
-        $filters = $this->mergeMorphicRelationshipAllowedFilters($filters);
-        return parent::allowedFilters($filters);
+    {  
+        parent::allowedFilters($filters);
+        $allowedFilters = $this->allowedFilters;
+        $this->addToTotalAllowedFilters($allowedFilters);
+        return $this;
     }
 
+    public function getMorphicRelationshipsFilters() : array
+    {   
+        return FilterRuntimeManager::Singleton()->getAllowedFilters();
+    }
 
-
+    public function applyDefinedMorphicFilters() : self
+    {
+        $filters = $this->getMorphicRelationshipsFilters(); 
+        return $this->allowedFilters($filters); // the method in this class ... not th parent's method
+    }
+  
     protected function addFiltersToQuery()
     {
         parent::addFiltersToQuery();
         FilterRuntimeManager::Singleton()->customizeQuery( $this->getEloquentBuilder() );
     }
+
 }

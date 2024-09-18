@@ -3,8 +3,7 @@
 namespace MorphicAbstractEloquent\Relations;
  
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
-use MorphicAbstractEloquent\RelationIdentifiers\MorphToSingleTableRelationIdentifier;
-use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
+use MorphicAbstractEloquent\RelationIdentifiers\MorphToSingleTableRelationIdentifier; 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder ;
 use Illuminate\Database\Eloquent\Model;  
@@ -37,9 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @var AbstractRuntimeModel $related
  */
 class MorphToSingleTable extends BelongsTo
-{
-    use RelationshipLazyLoadingHandlingMethods;
-
+{  
     protected ?string $defaultRelatedModelClass = null;
     protected MorphToSingleTableRelationIdentifier $relationIdentifier;
    

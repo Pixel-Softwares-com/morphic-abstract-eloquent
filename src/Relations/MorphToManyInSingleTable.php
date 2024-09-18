@@ -4,8 +4,7 @@ namespace MorphicAbstractEloquent\Relations;
 
 use MorphicAbstractEloquent\CollectionHelpers\EloquentCollectionHelpers;
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
-use MorphicAbstractEloquent\RelationIdentifiers\MorphToManyInSingleTableRelationIdentifier;
-use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
+use MorphicAbstractEloquent\RelationIdentifiers\MorphToManyInSingleTableRelationIdentifier; 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -38,8 +37,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @var AbstractRuntimeModel $related
  */
 class MorphToManyInSingleTable extends BelongsToMany
-{
-    use RelationshipLazyLoadingHandlingMethods;
+{ 
 
     protected MorphToManyInSingleTableRelationIdentifier $relationIdentifier;
     protected array $lazyLoadingRelationships = [];

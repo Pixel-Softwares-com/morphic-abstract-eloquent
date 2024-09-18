@@ -8,10 +8,11 @@ use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
 use Illuminate\Database\Eloquent\Builder; 
 use Illuminate\Support\Traits\ForwardsCalls;
+use MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\FilterRuntimeManager;
 
 class MorphicAbstractModelListingService
 {
-    use RelationshipLazyLoadingHandlingMethods , ForwardsCalls;
+    use ForwardsCalls;
 
     protected string $tableName;
     protected string $morphColumnName;
@@ -68,6 +69,15 @@ class MorphicAbstractModelListingService
     public function getMorphColumnName(): string
     {
         return $this->morphColumnName;
+    } 
+    
+    protected function initFilterRuntimeManager() : FilterRuntimeManager
+    {
+        return FilterRuntimeManager::Singleton();
     }
-  
+    protected function hasAutomaticallyDefinedAllowedFilters() : bool
+    {
+        return !empty($this->initFilterRuntimeManager()->getAllowedFilters());
+    }
+ 
 }
