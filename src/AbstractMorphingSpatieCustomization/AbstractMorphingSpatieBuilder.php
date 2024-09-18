@@ -14,11 +14,11 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
 
         $eloquentBuilderModel = $this->getSubject()->getModel();
 
-        throw_unless(
-            $eloquentBuilderModel instanceof AbstractRuntimeModel,
-            new Exception("The model passed to spatie's eloquent builder : must be AbstractRuntimeModel typed model !")
-        );
-
+        if(!$eloquentBuilderModel instanceof AbstractRuntimeModel)
+        {
+            new Exception("The model passed to spatie's eloquent builder : must be AbstractRuntimeModel typed model !");
+        } 
+          
         $eloquentBuilderModel->checkRequiredMetaDataPassing();
 
         return $this;

@@ -5,13 +5,14 @@ namespace MorphicAbstractEloquent\Traits;
 use MorphicAbstractEloquent\CollectionHelpers\EloquentCollectionHelpers;
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use Illuminate\Database\Eloquent\Model; 
-use Illuminate\Database\Eloquent\Collection  as EloquentCollection; 
-use MorphicAbstractEloquent\Interfaces\DefinesPolymorphicRelationships;
+use Illuminate\Database\Eloquent\Collection  as EloquentCollection;  
 use Illuminate\Pagination\AbstractCursorPaginator;
 use Illuminate\Pagination\AbstractPaginator;
 
 trait RelationshipLazyLoadingHandlingMethods
 {
+    use RelationsSanitizingMethods;
+
     protected array $realtionsForLazyLoading = [];
  
     protected function emptyQueryBuilderEagerLoads() : void
@@ -42,35 +43,7 @@ trait RelationshipLazyLoadingHandlingMethods
     {
         $this->setRelationsForLazyLoading( $this->getEagerLoadsToLazyLoading() );
         $this->emptyQueryBuilderEagerLoads();
-    }
- 
-
-    protected function sanitizeMorpicTypeLoadableRelationships(array $lazyLoadingRelationships , Model $model) : array
-    {
-        if(!$model instanceof DefinesPolymorphicRelationships)
-        {
-            return $lazyLoadingRelationships;    
-        }
-        
-        $modelPolymorpicRelationships = $model->getPolymorphicRelationshipNames();
-        $validRelationships = [];
-
-         // loop is needed because $lazyLoadingRelationships array may has constraints , but $modelPolymorpicRelationships may not has constraints by default
-        foreach($lazyLoadingRelationships as $relationship => $callback)
-        {
-            if( is_int($relationship)  )
-            {
-                $relationship = $callback;
-                $callback = function($query){};
-            }
-
-            if( array_key_exists($relationship , $modelPolymorpicRelationships ) || in_array($relationship , $modelPolymorpicRelationships) )
-            {
-                $validRelationships[$relationship] = $callback;
-            }
-        }
-        return  $validRelationships;
-    }
+    } 
 
     public function morphicCollectionRelationshipsLazyLoading(EloquentCollection $collection , string $morphColumnName ) : EloquentCollection
     {

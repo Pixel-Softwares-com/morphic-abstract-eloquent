@@ -132,7 +132,8 @@ class MorphToManyInSingleTable extends BelongsToMany
         /**
          * no new empty AbstractRuntimeModel instance allowed to be return .... if no model is found null will be return
          */
-        return $this->find($id , $columns);
+        $instance = $this->find($id , $columns);
+        return $instance && EloquentCollectionHelpers::isModelAllowedToRetrieve($instance) ? $instance : null;
     }
  
     public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)

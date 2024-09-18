@@ -4,6 +4,7 @@ namespace MorphicAbstractEloquent\Models;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use MorphicAbstractEloquent\EloquentBuilder\MorphicEloquentBuilder;
 use stdClass;
 
 class AbstractRuntimeModel extends Model
@@ -47,7 +48,16 @@ class AbstractRuntimeModel extends Model
             throw new Exception("No MorphColumnName is set for AbstractRuntimeModel object !");
         }
     }
-
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new MorphicEloquentBuilder($query);
+    }
     /**
      * Get a new query builder that doesn't have any global scopes.
      *

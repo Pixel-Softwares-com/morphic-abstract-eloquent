@@ -13,9 +13,18 @@ class EloquentCollectionHelpers
 {
     public static $AllowedToRetrieveAbstractRuntimeModel = false;
     
-    protected static function isModelAllowedToRetrieve(Model $model): bool
+    public static function isModelAllowedToRetrieve(Model $model): bool
     {
         return static::$AllowedToRetrieveAbstractRuntimeModel || !$model instanceof AbstractRuntimeModel;
+    }
+
+    public static function excludeArrayAbstractRuntimeModel(array $dataArray = []): array
+    {
+        return array_filter(
+                                $dataArray ,
+                                 fn($model) => $model instanceof Model && static::isModelAllowedToRetrieve($model)
+                            );
+
     }
 
     public static function excludeAbstractRuntimeModel(EloquentCollection $collection): EloquentCollection
