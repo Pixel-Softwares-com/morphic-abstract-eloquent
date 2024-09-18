@@ -6,13 +6,8 @@ use MorphicAbstractEloquent\CollectionHelpers\EloquentCollectionHelpers;
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use MorphicAbstractEloquent\RelationIdentifiers\MorphToManyInSingleTableRelationIdentifier;
 use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
-use Illuminate\Database\Eloquent\Model; 
-use Illuminate\Database\Eloquent\Collection  as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Pagination\AbstractCursorPaginator;
-use Illuminate\Pagination\AbstractPaginator;
 
 /**
  * The Algorithm of work :
@@ -98,35 +93,6 @@ class MorphToManyInSingleTable extends BelongsToMany
         return $this->getRelationIdentifier()->getMorphColumnName();
     }
   
- 
-    protected function prepareToExecuteQuery() : void
-    {
-        $this->delayRelationshipLoading(); // and othe methods if it is needed   
-    }
-    /**
-     * Execute the query as a "select" statement. 
-     * (it is called when the getEager method called ... it is generally called in the EloquentBuilder during the eagerLoading of loaded models relationships)
-     *
-     * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function get($columns = ['*'])
-    {  
-
-        $this->prepareToExecuteQuery();
-         
-        $modelCollection = parent::get($columns);
-
-        $modelCollection = EloquentCollectionHelpers::excludeAbstractRuntimeModel($modelCollection);
-        
-        $this->morphicCollectionRelationshipsLazyLoading($modelCollection , $this->getMorphColumnName());
-
-        return  $modelCollection;  
-        
-    }
-
-
-
     public function findOrNew($id, $columns = ['*'])
     {
         /**
@@ -136,41 +102,5 @@ class MorphToManyInSingleTable extends BelongsToMany
         return $instance && EloquentCollectionHelpers::isModelAllowedToRetrieve($instance) ? $instance : null;
     }
  
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    { 
-        $this->prepareToExecuteQuery();
-
-        $paginator = parent::paginate($perPage  , $columns  , $pageName , $page ); 
-
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator , $this->getMorphColumnName());
     
-        return  $paginator;
-
-    }
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $this->prepareToExecuteQuery();
-        $paginator = parent::simplePaginate($perPage  , $columns  , $pageName  , $page  );
-        
-        
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-        
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator , $this->getMorphColumnName());
-     
-        return  $paginator;
-    }
-
-    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
-    {
-        $this->prepareToExecuteQuery();
-        $paginator = parent::cursorPaginate($perPage , $columns , $cursorName , $cursor );
-     
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-        
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator , $this->getMorphColumnName());
-
-        return  $paginator;
-    }
 }

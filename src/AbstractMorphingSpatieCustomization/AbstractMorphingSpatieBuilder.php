@@ -41,7 +41,7 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
      */
     public function allowedFilters($filters): self
     { 
-        $filters = $this->mergeMorphicRelationshipAllowedFilters($filters); 
+        $filters = $this->mergeMorphicRelationshipAllowedFilters($filters);
         return parent::allowedFilters($filters);
     }
 

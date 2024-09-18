@@ -1,8 +1,7 @@
 <?php
 
 namespace MorphicAbstractEloquent\Relations;
-
-use MorphicAbstractEloquent\CollectionHelpers\EloquentCollectionHelpers;
+ 
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use MorphicAbstractEloquent\RelationIdentifiers\MorphToSingleTableRelationIdentifier;
 use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
@@ -144,50 +143,5 @@ class MorphToSingleTable extends BelongsTo
 
         return $instance;
     }
-
-    /**
-     * Get the results of the relationship (it is called when a model load a relationship as a dynamic property by __get magical method found on Model class ).
-     *
-     * 
-     * This method has the same behavior applied in MorphTo , BeLongsTo classes .... we just get the data as a stdClass typed object the change it with the convenient model type then load its relationships by lazyLoading
-     * after that retur it
-     * 
-     * @return mixed
-     */
-    public function getResults()
-    {
-        if (is_null($this->child->{$this->foreignKey})) // the same behavior  applied in MorphTo , BeLongsTo classes 
-        {
-            return $this->getDefaultFor($this->parent); 
-        } 
-        
-        $this->prepareToExecuteQuery();
-        if(!$model = $this->query->first())
-        {
-            return $this->getDefaultFor($this->parent);
-        }
-
-        return $this->morphicModelRelationshipsLazyLoading($model);// relationships lazy loading ... then returning it
  
-    }
-    
- 
-    protected function prepareToExecuteQuery() : void
-    {
-        $this->delayRelationshipLoading(); // and othe methods if it is needed   
-    }
-    /**
-     * Execute the query as a "select" statement. 
-     * (it is called when the getEager method called ... it is generally called in the EloquentBuilder during the eagerLoading of loaded models relationships)
-     *
-     * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function get($columns = ['*'])
-    {
-        $this->prepareToExecuteQuery();
-        $modelCollection = $this->query->get($columns);
-        $modelCollection = EloquentCollectionHelpers::excludeAbstractRuntimeModel($modelCollection);
-        return $this->morphicCollectionRelationshipsLazyLoading($modelCollection , $this->getMorphColumnName());
-    }
 }

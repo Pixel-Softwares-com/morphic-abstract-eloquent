@@ -2,19 +2,16 @@
 
 namespace MorphicAbstractEloquent\Services;
 
+
 use MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\AbstractMorphingSpatieBuilder;
-use MorphicAbstractEloquent\CollectionHelpers\EloquentCollectionHelpers;
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
-use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder; 
+use Illuminate\Support\Traits\ForwardsCalls;
 
 class MorphicAbstractModelListingService
 {
-    use RelationshipLazyLoadingHandlingMethods;
+    use RelationshipLazyLoadingHandlingMethods , ForwardsCalls;
 
     protected string $tableName;
     protected string $morphColumnName;
@@ -29,6 +26,11 @@ class MorphicAbstractModelListingService
             ->setMorphColumnName($morphColumnName)
             ->initAbstractRuntimeModel()
             ->initSpatieQueryBuilder();
+    }
+
+    public function __call($name, $arguments)
+    {  
+        return $this->forwardDecoratedCallTo($this->query, $name, $arguments); 
     }
 
     protected function initAbstractRuntimeModel(): self
@@ -46,16 +48,9 @@ class MorphicAbstractModelListingService
         $this->query =  AbstractMorphingSpatieBuilder::for($this->initAbstractRuntimeEloquentBuilder());
         return $this;
     }
-
-    public function callbackOnBuilderBeforeGettingResults($callback)
-    {
-        if (is_callable($callback)) {
-            $this->BuilderQueryCallback = $callback;
-        }
-    }
-
+ 
     public function setTableName(string $tableName): self
-    {
+    { 
         $this->tableName = $tableName;
         return $this;
     }
@@ -74,63 +69,5 @@ class MorphicAbstractModelListingService
     {
         return $this->morphColumnName;
     }
- 
-    protected function prepareToExecuteQuery(): void
-    {
-        $this->delayRelationshipLoading(); // and othe methods if it is needed   
-    }
-
-    protected function executeQueryBuilderCallback(): void
-    {
-        ($this->BuilderQueryCallback)($this->query);
-    }
-
-
-    public function get(): EloquentCollection
-    {
-        $this->executeQueryBuilderCallback();
-        $this->prepareToExecuteQuery();
-        $modelCollection = $this->query->get();
-        EloquentCollectionHelpers::excludeAbstractRuntimeModel($modelCollection);
-        return $this->morphicCollectionRelationshipsLazyLoading($modelCollection, $this->getMorphColumnName());
-    }
-
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null): Paginator
-    {
-        $this->executeQueryBuilderCallback();
-        $this->prepareToExecuteQuery();
-
-        $paginator = $this->query->paginate($perPage, $columns, $pageName, $page);
-
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator, $this->getMorphColumnName());
-        return $paginator;
-    }
-
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
-    {
-        $this->executeQueryBuilderCallback();
-        $this->prepareToExecuteQuery();
-
-        $paginator = $this->query->simplePaginate($perPage, $columns, $pageName, $page);
-
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator, $this->getMorphColumnName());
-        return $paginator;
-    }
-
-    public function cursorPaginate($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
-    {
-        $this->executeQueryBuilderCallback();
-        $this->prepareToExecuteQuery();
-
-        $paginator = $this->query->cursorPaginate($perPage, $columns, $cursorName, $cursor);
-
-        EloquentCollectionHelpers::excludePaginatorAbstractRuntimeModels($paginator);
-
-        $this->morphicPaginatorRelationshipsLazyLoading($paginator, $this->getMorphColumnName());
-        return $paginator;
-    }
+  
 }
