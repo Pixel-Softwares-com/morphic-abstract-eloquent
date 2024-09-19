@@ -48,10 +48,9 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
      * @return self
      */
     public function allowedFilters($filters): self
-    {  
+    {   
         parent::allowedFilters($filters);
-        $allowedFilters = $this->allowedFilters;
-        $this->addToTotalAllowedFilters($allowedFilters);
+        $this->addToTotalAllowedFilters($this->allowedFilters);
         return $this;
     }
 
