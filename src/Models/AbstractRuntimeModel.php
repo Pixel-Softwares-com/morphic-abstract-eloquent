@@ -23,7 +23,7 @@ class AbstractRuntimeModel extends Model
     {
         static::unguard(); // because we use this model trustly from our custom classes ... only data come from our database will be fill
         parent::__construct($attributes );
-        $this::reguard();
+        $this::reguard(); //return it back to the guarding previous status ... because it is a Model static property
     }
 
     public function setMorphColumnName(string $morphColumnName) : self
