@@ -25,6 +25,7 @@ class AbstractRuntimeModel extends Model
         parent::__construct($attributes );
         $this::reguard(); //return it back to the guarding previous status ... because it is a Model static property
     }
+    
 
     public function setMorphColumnName(string $morphColumnName) : self
     {
