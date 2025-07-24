@@ -15,7 +15,8 @@ abstract class MorphicRelationshipFilterIdentifier
     protected string $filterRequestKey ;
     protected ?string $filteringInternalColumn = null;
      
-    
+    abstract public function filterHasJustRequested(Builder $query, $value, string $property) : void;
+
     public function __construct(string $filterRequestKey ,  ?string $filteringInternalColumn = null)
     {
         $this->setFilterRequestKey($filterRequestKey)->setFilteringInternalColumn($filteringInternalColumn);
@@ -51,19 +52,23 @@ abstract class MorphicRelationshipFilterIdentifier
         return $this->morphicRelationshipTableFilterIdentifiers;
     }
 
-    protected function registerselfAllowedFilter() : void
+    protected function registerSelfAllowedFilter() : void
     {
         FilterRuntimeManager::Singleton()->registerMorphicAllowedFilter($this);
     }
+
     public function filterOnRelationshipTable(MorphicRelationshipTableFilterIdentifier $tableFilterIdentifier) : self
     {
-        $this->registerselfAllowedFilter();
+        $this->registerSelfAllowedFilter();
 
         $key = FilterRuntimeManager::composeTableFilterIdentifierKey($tableFilterIdentifier);
+
         $this->morphicRelationshipTableFilterIdentifiers[ $key ] = $tableFilterIdentifier;
         $this->morphicRelationshipTables[$key] = $tableFilterIdentifier->getRelationshipTable();
+
         return  $this;
     }
+
     public function filterOnRelationshipTables(array $morphicRelationshipTableFilterIdentifiers = []) : self
     {
         foreach($morphicRelationshipTableFilterIdentifiers as $identifer)
@@ -75,6 +80,7 @@ abstract class MorphicRelationshipFilterIdentifier
         }
         return  $this;
     }  
+
     public function getTableNames() : array
     {
         return $this->morphicRelationshipTables;
@@ -85,6 +91,5 @@ abstract class MorphicRelationshipFilterIdentifier
         FilterRuntimeManager::Singleton()->registerRequestedFilter( $this );
     } 
 
-    abstract public function filterHasJustRequested(Builder $query, $value, string $property) : void;
      
 }

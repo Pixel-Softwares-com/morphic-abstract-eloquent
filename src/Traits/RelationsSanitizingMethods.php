@@ -27,7 +27,11 @@ trait RelationsSanitizingMethods
                 $callback = function($query){};
             }
 
-            if( array_key_exists($relationship , $modelPolymorpicRelationships ) || in_array($relationship , $modelPolymorpicRelationships) )
+            if( 
+                array_key_exists($relationship , $modelPolymorpicRelationships ) 
+                ||
+                in_array($relationship , $modelPolymorpicRelationships) 
+              )
             {
                 $validRelationships[$relationship] = $callback;
             }

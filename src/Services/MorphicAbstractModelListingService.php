@@ -2,10 +2,8 @@
 
 namespace MorphicAbstractEloquent\Services;
 
-
 use MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\AbstractMorphingSpatieBuilder;
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
-use MorphicAbstractEloquent\Traits\RelationshipLazyLoadingHandlingMethods;
 use Illuminate\Database\Eloquent\Builder; 
 use Illuminate\Support\Traits\ForwardsCalls;
 use MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\FilterRuntimeManager;
@@ -44,9 +42,10 @@ class MorphicAbstractModelListingService
     {
         return $this->abstractRuntimeModel->newQuery();
     }
+
     protected function initSpatieQueryBuilder(): self
     {
-        $this->query =  AbstractMorphingSpatieBuilder::for($this->initAbstractRuntimeEloquentBuilder());
+        $this->query = AbstractMorphingSpatieBuilder::for($this->initAbstractRuntimeEloquentBuilder());
         return $this;
     }
  
@@ -55,6 +54,7 @@ class MorphicAbstractModelListingService
         $this->tableName = $tableName;
         return $this;
     }
+
     public function getTableName(): string
     {
         return $this->tableName;
@@ -75,6 +75,7 @@ class MorphicAbstractModelListingService
     {
         return FilterRuntimeManager::Singleton();
     }
+
     protected function hasAutomaticallyDefinedAllowedFilters() : bool
     {
         return !empty($this->initFilterRuntimeManager()->getAllowedFilters());

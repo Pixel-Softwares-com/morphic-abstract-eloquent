@@ -23,8 +23,8 @@ trait morphToManyInSingleTableMethods
                                                                             string $morpColumnName , 
                                                                             string $currentModelPivotKeyName , 
                                                                             string $relatedAbstractPivotKeyName,
-                                                                            string $relatedAbstractKeyName = null  , 
-                                                                            string $currentModelKeyName = null
+                                                                            ?string $relatedAbstractKeyName = null  , 
+                                                                            ?string $currentModelKeyName = null
                                                                         ) : MorphToManyInSingleTableRelationIdentifier 
     {
         return new MorphToManyInSingleTableRelationIdentifier(
@@ -62,16 +62,18 @@ trait morphToManyInSingleTableMethods
     { 
         $relation = $this->getBelongsToManyRelationName($relation);
 
-        $MorpToSingleTableIdentifier = $this->initMorphToManyInSingleTableRelationIdentifier(   
-                                                                                                    $relation ,
-                                                                                                    $pivotTableName , 
-                                                                                                    $relatedAbstractTableName , 
-                                                                                                    $morpColumnName , 
-                                                                                                    $currentModelPivotKeyName , 
-                                                                                                    $relatedAbstractPivotKeyName,
-                                                                                                    $relatedAbstractKeyName    , 
-                                                                                                    $currentModelKeyName 
-                                                                                                );
+        $MorpToSingleTableIdentifier 
+        =
+        $this->initMorphToManyInSingleTableRelationIdentifier(   
+                                                                $relation ,
+                                                                $pivotTableName , 
+                                                                $relatedAbstractTableName , 
+                                                                $morpColumnName , 
+                                                                $currentModelPivotKeyName , 
+                                                                $relatedAbstractPivotKeyName,
+                                                                $relatedAbstractKeyName    , 
+                                                                $currentModelKeyName 
+                                                             );
         return $this->newMorpToManyInSingleTable($MorpToSingleTableIdentifier); 
     }
 

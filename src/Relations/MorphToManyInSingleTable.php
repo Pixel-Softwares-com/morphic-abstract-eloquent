@@ -80,6 +80,7 @@ class MorphToManyInSingleTable extends BelongsToMany
     {
         $this->relationIdentifier = $relationIdentifier;
     }
+    
     public function getRelationIdentifier() : MorphToManyInSingleTableRelationIdentifier
     {
         return $this->relationIdentifier;

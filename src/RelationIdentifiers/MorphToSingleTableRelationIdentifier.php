@@ -88,6 +88,7 @@ class MorphToSingleTableRelationIdentifier extends RelationIdentifier
         $this->childModel = $childModel;
         return $this;
     }
+    
     public function getChildModel() : Model
     {
         return $this->childModel;

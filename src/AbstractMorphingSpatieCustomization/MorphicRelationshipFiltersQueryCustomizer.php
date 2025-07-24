@@ -16,7 +16,7 @@ class MorphicRelationshipFiltersQueryCustomizer
             return ;
         }
 
-        $query->where(function($q) use ($existingQueries )
+        $query->where(function(Builder | BaseBuilder $q) use ($existingQueries )
         {
             foreach($existingQueries as $queryIndex => $existingQuery)
             {
@@ -26,6 +26,7 @@ class MorphicRelationshipFiltersQueryCustomizer
            
           }); 
     }
+
     protected static function getQueryBuilderTableName(Builder | BaseBuilder $builder) : string
     {
         if($builder instanceof Builder)
@@ -46,10 +47,12 @@ class MorphicRelationshipFiltersQueryCustomizer
   
         $tableQuery->whereColumn( $parentLocalKey , "=", $childForeignKey);
     }
+
     protected static function handleValueWildcard(string $operator , $value)
     {
         $operator =  strtolower( $operator );
         $wildcardOperators = ["like" , "not like"];
+
         if( in_array($operator  , $wildcardOperators) )
         {
             return "%" . strval($value) . "%";
@@ -126,6 +129,7 @@ class MorphicRelationshipFiltersQueryCustomizer
             
         });
     }
+
     public static function customizeQuery(Builder | BaseBuilder $query , array $relationshipTableFilterIdentifiers = []) : void
     {
         $relationshipTableFilterIdentifiers = static::sanitizeMorphicRelationshipTableFilterIdentifiersArray($relationshipTableFilterIdentifiers);

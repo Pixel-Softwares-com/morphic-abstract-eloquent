@@ -28,6 +28,7 @@ class FilterRuntimeManager
         }
         return static::$instance;
     }
+
     public function filterIdentifierToAllowedFilter(MorphicRelationshipFilterIdentifier $filterIdentifier): AllowedFilter
     {
         return MorphicRelationshipAllowedFilterFactory::getAllowedFiltersForMorphicRelationship($filterIdentifier);
@@ -43,6 +44,7 @@ class FilterRuntimeManager
         $this->registeredAllowedFilters[$key] = $this->filterIdentifierToAllowedFilter($filterIdentifier) ;
         return $this;
     }
+
     public function addAllowedFilterIdentifier(MorphicRelationshipFilterIdentifier  $filterIdentifier , string $key) : self
     {
         $this->registeredAllowedFilterIdentifiers[$key] = $filterIdentifier;
@@ -77,24 +79,29 @@ class FilterRuntimeManager
         }
         return $this;
     }
+
     protected function registerRequestedFilterIdentifier(MorphicRelationshipFilterIdentifier  $filterIdentifier)  : self
     {
         $filterKey = $this::composeFilterIdentifierKey($filterIdentifier) ;
         $this->requestedFilterIdentifiers[$filterKey] = $filterIdentifier;
         return $this;
     }
+
     function getRequestedFilterIdentifiers()  : array
     {
         return  $this->requestedFilterIdentifiers;
     }
+
     public function getAllowedFilters() : array
     {
         return $this->registeredAllowedFilters;
     }
+
     public function hasAllowedFilters() : bool
     {
         return !empty( $this->getAllowedFilters() );
     }
+
     public function getAllowedFilterIdentifiers() : array
     {
         return $this->registeredAllowedFilterIdentifiers;
@@ -104,6 +111,7 @@ class FilterRuntimeManager
     {
         return $this->excludedTableFilterIdenfirers;
     }
+    
     protected function excludeTableFilterIdentifier(MorphicRelationshipTableFilterIdentifier $tableFilterIdentifier , ?string $identiferKey = null) : void
     {
         if(!$identiferKey)
@@ -156,7 +164,9 @@ class FilterRuntimeManager
     {
         if($this->isItQueryChainStart($tableFilterIdentifier))
         {
-            $this->QueryChainStarterTableFilterIdentifiers[ $this::composeTableFilterIdentifierKey($tableFilterIdentifier) ] =  $tableFilterIdentifier;
+            $key = $this::composeTableFilterIdentifierKey($tableFilterIdentifier);
+            
+            $this->QueryChainStarterTableFilterIdentifiers[ $key ] = $tableFilterIdentifier;
         }
     }
   
@@ -212,7 +222,11 @@ class FilterRuntimeManager
          * then will only return the parent table objects in getRelationshipTableFilterIdentifiers method
          */
 
-        if($this->isTableFilterIdentifierValidToQueryIncluding($tableFilterIdentifier) && ! $this->isTableIncludedToQueryChain($tableFilterIdentifier))
+        if(
+                $this->isTableFilterIdentifierValidToQueryIncluding($tableFilterIdentifier) 
+                &&
+                ! $this->isTableIncludedToQueryChain($tableFilterIdentifier)
+           )
         {
             $key = $this::composeTableFilterIdentifierKey($tableFilterIdentifier);
 
@@ -243,6 +257,7 @@ class FilterRuntimeManager
             $this->processRequestedFilterQueryChain($filterIdentifier);
         } 
     }
+
     public function getQueryChainStarterTableFilterIdentifiers() : array
     { 
         return $this->QueryChainStarterTableFilterIdentifiers; 

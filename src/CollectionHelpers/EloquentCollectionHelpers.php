@@ -67,6 +67,7 @@ class EloquentCollectionHelpers
     {
         return new EloquentCollection($data);
     }
+    
     public static function convertToEloquentCollection(stdClassCollection $collection): EloquentCollection
     {
         return static::initEloquentCollection($collection->all());

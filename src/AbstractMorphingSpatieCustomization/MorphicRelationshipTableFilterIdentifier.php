@@ -40,7 +40,6 @@ class MorphicRelationshipTableFilterIdentifier
         return $this->relationshipTable ;
     }
 
-
     public function setForeignKey(string $foreignKey) : self
     {
         $this->foreignKey = $foreignKey;
@@ -52,7 +51,6 @@ class MorphicRelationshipTableFilterIdentifier
         return $this->foreignKey ;
     }
 
-
     public function setParentLocalKey(string $parentLocalKey = "id") : self
     {
         $this->parentLocalKey = $parentLocalKey;
@@ -63,7 +61,6 @@ class MorphicRelationshipTableFilterIdentifier
     {
         return $this->parentLocalKey ;
     }
-
   
     public function canFilterOnColumn(MorphicRelationshipFilterIdentifier $filterIdentifier) : self
     {
@@ -98,11 +95,11 @@ class MorphicRelationshipTableFilterIdentifier
         return $this;
     }
  
-
     public function FilterHasJustRequest(MorphicRelationshipFilterIdentifier $filterIdentifier) : void
     {
         $this->requestedFilterIdentifiers[  FilterRuntimeManager::composeFilterIdentifierKey($filterIdentifier)  ] = $filterIdentifier;
     } 
+    
     public function getRequestedFilterIdentifiers() : array
     {
         return $this->requestedFilterIdentifiers;
@@ -113,19 +110,23 @@ class MorphicRelationshipTableFilterIdentifier
         $this->parentTableIdentifiers[ $parentTableIdentifier->getRelationshipTable() ] = $parentTableIdentifier;
         return  $this;
     } 
+    
     public function getParentTableIdentifiers() : array
     {
         return $this->parentTableIdentifiers;
     }
+    
     public function addChildTableIdentifier(MorphicRelationshipTableFilterIdentifier $childTableIdentifier ) : self
     {
         $this->childTableIdentifiers[ $childTableIdentifier->getRelationshipTable() ] = $childTableIdentifier;
         return  $this;
     }
+    
     public function getChildTableIdentifiers() : array
     {
         return $this->childTableIdentifiers;
     }
+
     public function filterOnRelatedTable(MorphicRelationshipTableFilterIdentifier $relatedTableFilterIdentifier) : self
     {
         $relatedTableFilterIdentifier->addParentTableIdentifier($this);

@@ -76,6 +76,7 @@ class MorphToSingleTable extends BelongsTo
     {
         $this->relationIdentifier = $relationIdentifier;
     }
+    
     public function getRelationIdentifier() : MorphToSingleTableRelationIdentifier
     {
         return $this->relationIdentifier;

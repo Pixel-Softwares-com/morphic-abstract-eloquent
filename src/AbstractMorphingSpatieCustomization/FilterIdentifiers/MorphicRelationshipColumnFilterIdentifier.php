@@ -3,7 +3,6 @@
 
 namespace MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\FilterIdentifiers;
 
-use MorphicAbstractEloquent\AbstractMorphingSpatieCustomization\FilterRuntimeManager; 
 use Illuminate\Database\Eloquent\Builder;
 
 class MorphicRelationshipColumnFilterIdentifier extends MorphicRelationshipFilterIdentifier
@@ -35,6 +34,7 @@ class MorphicRelationshipColumnFilterIdentifier extends MorphicRelationshipFilte
         $this->operator = $operator;
         return $this;
     }
+
     public function getOperaotr() : string
     {
         return $this->operator;
@@ -54,6 +54,7 @@ class MorphicRelationshipColumnFilterIdentifier extends MorphicRelationshipFilte
     public function filterHasJustRequested(Builder $query, $value, string $property) :void 
     {
         $this->setFilterRequestValue($value)->setFilteringInternalColumn($property);
+
         $this->notifyRelatedTableFilterIdentifiers();
         $this->registerRequestedFilter();        
     }

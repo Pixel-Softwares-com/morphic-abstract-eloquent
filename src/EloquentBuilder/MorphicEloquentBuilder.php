@@ -3,7 +3,6 @@
 
 namespace MorphicAbstractEloquent\EloquentBuilder;
 
-
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -75,16 +74,25 @@ class MorphicEloquentBuilder extends Builder
         }
 
         $morphicModelsCollection = EloquentCollectionHelpers::initEloquentCollection($models);
-        $morphGroupedCollections = EloquentCollectionHelpers::groupByMorphColumnValue($morphicModelsCollection , $this->getMorphColumnName());
+        $morphGroupedCollections = EloquentCollectionHelpers::groupByMorphColumnValue(
+                                                                                         $morphicModelsCollection ,
+                                                                                         $this->getMorphColumnName()
+                                                                                     );
         
-        $morphGroupedCollections->each(function($subCollection , $morphValue)  use ($relations , $morphGroupedCollections)
+        $morphGroupedCollections->each(function(Collection $subCollection , $morphValue)  use ($relations , $morphGroupedCollections)
         {
-            $sanitizedModelTypeEagers =  $this->sanitizeMorpicTypeLoadableRelationships($relations , $subCollection->first() );
+            $sanitizedModelTypeEagers = $this->sanitizeMorpicTypeLoadableRelationships(
+                                                                                           $relations ,
+                                                                                           $subCollection->first() 
+                                                                                       );
 
             if($morphValue && !empty($sanitizedModelTypeEagers))
             {
                  // eager loading for each morph type  
-                $morphGroupedCollections->offsetSet($morphValue,  $this->loadEagerLoadSubCollectionRelations( $subCollection , $sanitizedModelTypeEagers ) );
+                $morphGroupedCollections->offsetSet(
+                                                        $morphValue,
+                                                        $this->loadEagerLoadSubCollectionRelations( $subCollection , $sanitizedModelTypeEagers ) 
+                                                    );
             }
 
         });
@@ -101,10 +109,12 @@ class MorphicEloquentBuilder extends Builder
     {
         return $this->eagerLoadingTempModelPrototype ?? $this->model;
     }
+
     protected function setEagerLoadingTempModelPrototype(Model $model)
     {
         $this->eagerLoadingTempModelPrototype = $model;
     }
+
     protected function clearEagerLoadingTempModelPrototype()
     {
         $this->eagerLoadingTempModelPrototype = null;

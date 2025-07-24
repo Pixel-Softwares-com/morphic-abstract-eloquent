@@ -10,7 +10,11 @@ class MorphicRelationshipAllowedFilterFactory
  
     public static function getAllowedFiltersForMorphicRelationship( MorphicRelationshipFilterIdentifier $filterIdentifier ) : AllowedFilter
     { 
-        return AllowedFilter::custom($filterIdentifier->getFilterRequestKey() , new MorphicRelationshipFilterRequestingListener($filterIdentifier) , $filterIdentifier->getFilteringInternalColumn());
+        return AllowedFilter::custom(
+                                        $filterIdentifier->getFilterRequestKey() ,
+                                        new MorphicRelationshipFilterRequestingListener($filterIdentifier) ,
+                                        $filterIdentifier->getFilteringInternalColumn()
+                                    );
     }
  
 }

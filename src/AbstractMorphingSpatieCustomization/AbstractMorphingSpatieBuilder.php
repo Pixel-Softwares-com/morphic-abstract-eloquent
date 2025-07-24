@@ -2,9 +2,13 @@
 
 namespace MorphicAbstractEloquent\AbstractMorphingSpatieCustomization;
 
+
 use MorphicAbstractEloquent\Models\AbstractRuntimeModel;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AbstractMorphingSpatieBuilder extends QueryBuilder
@@ -12,10 +16,19 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
     
     protected ?Collection $totalAllowedFilters = null;
 
-    protected function initializeSubject($subject): self
-    {
-        parent::initializeSubject($subject);
+    public function __construct(
+        protected EloquentBuilder|Relation $subject,
+        ?Request $request = null
+    ) {
 
+        parent::__construct($subject , $request);
+
+        $this->chcekSubjectValidity();
+
+    }
+
+    protected function chcekSubjectValidity(): self
+    {
         $eloquentBuilderModel = $this->getSubject()->getModel();
 
         if(!$eloquentBuilderModel instanceof AbstractRuntimeModel)
@@ -30,7 +43,7 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
 
     public function hasAllowedFilters() : bool
     {
-        return (bool) $this->allowedFilters;
+        return isset($this->allowedFilters) && $this->allowedFilters->isNotEmpty();
     }
      
     protected function addToTotalAllowedFilters(Collection $filters) : void
@@ -47,7 +60,7 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
      * 
      * @return self
      */
-    public function allowedFilters($filters): self
+    public function allowedFilters($filters): static
     {   
         parent::allowedFilters($filters);
         $this->addToTotalAllowedFilters($this->allowedFilters);
@@ -65,7 +78,7 @@ class AbstractMorphingSpatieBuilder extends QueryBuilder
         return $this->allowedFilters($filters); // the method in this class ... not th parent's method
     }
   
-    protected function addFiltersToQuery()
+    protected function addFiltersToQuery()  :void
     {
         parent::addFiltersToQuery();
         FilterRuntimeManager::Singleton()->customizeQuery( $this->getEloquentBuilder() );

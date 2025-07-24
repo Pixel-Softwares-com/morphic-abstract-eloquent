@@ -26,8 +26,8 @@ class MorphToManyInSingleTableRelationIdentifier extends RelationIdentifier
             string $currentModelPivotKeyName , 
             string $relatedAbstractPivotKeyName,
             Model $currentModel , 
-            string $relatedAbstractKeyName = null  , 
-            string $currentModelKeyName = null
+            ?string $relatedAbstractKeyName = null  , 
+            ?string $currentModelKeyName = null
         )
     {
         $this->setRelationName($relationName);

@@ -48,6 +48,7 @@ trait RelationshipLazyLoadingHandlingMethods
     public function morphicCollectionRelationshipsLazyLoading(EloquentCollection $collection , string $morphColumnName ) : EloquentCollection
     {
         $relations =  $this->getRelationsForLazyLoading();
+        
         if(!empty($relations) && !Model::preventsLazyLoading() )
         {
             $collection = EloquentCollectionHelpers::groupByMorphColumnValue($collection , $morphColumnName);
@@ -70,7 +71,10 @@ trait RelationshipLazyLoadingHandlingMethods
 
         if(!empty($relations) && !Model::preventsLazyLoading() && !$model instanceof AbstractRuntimeModel)
         {
-            $model->load( $model );
+            /**
+             *  need to test the fix
+             */
+            $model->load( $relations ); 
         }
         return $model;
     }

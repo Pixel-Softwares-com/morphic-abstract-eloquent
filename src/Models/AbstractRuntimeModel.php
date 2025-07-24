@@ -50,6 +50,7 @@ class AbstractRuntimeModel extends Model
             throw new Exception("No MorphColumnName is set for AbstractRuntimeModel object !");
         }
     }
+
     /**
      * Create a new Eloquent query builder for the model.
      *
@@ -83,6 +84,7 @@ class AbstractRuntimeModel extends Model
         {
             return $this->newInstanceInitializationClass ;
         }
+        
         if(empty($attributes))
         {
             return static::class;
@@ -193,6 +195,7 @@ class AbstractRuntimeModel extends Model
         
         return $attributes[ $morphColumnName ] ?? null; 
     }
+
     protected function getModelClassBasedOnMorpColumnValue(array $attributes = []) : string
     { 
       $morphValue = $this->getAttributesMorphValue($attributes);
